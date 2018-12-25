@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik
+    command: --web \
+      --docker \
+      --docker.swarmmode \
+      --docker.domain=traefik \
+      --docker.watch \
+      --logLevel=DEBUG
+    networks:
+      - traefik-webnet
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/home/pi/labdev/traefik/traefik.toml
+    deploy:
+      placement:
+        constraints: [node.role==manager]
+
+  homeassistant:
+     image: homeassistant/raspberrypi3-homeassistant
+     networks:
+       - traefik-webnet
+     ports:
+       - 8123:8123
+     volumes:
+       - ./homeassistantconfig:/config
+       - /etc/localtime:/etc/localtime:ro
+     deploy:
+       placement:
+         constraints:
+           - node.labels.network == internal
+       mode: replicated
+       labels:
+         - "traefik.port=8123"
+         - "traefik.backend=homeassistant-be"
+         - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
+
+networks:
+  traefik-webnet:
+    driver: overlay
