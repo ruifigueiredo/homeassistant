@@ -12,6 +12,7 @@ services:
     networks:
       - traefik-webnet
     ports:
+      - "8123:8123"
       - "80:80"
       - "8080:8080"
     volumes:
@@ -25,21 +26,22 @@ services:
      image: homeassistant/raspberrypi3-homeassistant
      networks:
        - traefik-webnet
-     ports:
-       - 8123:8123
      volumes:
-       - ./homeassistantconfig:/config
+       - homeassistantconfig:/config
        - /etc/localtime:/etc/localtime:ro
      deploy:
-       placement:
-         constraints:
-           - node.labels.network == internal
        mode: replicated
        labels:
-         - "traefik.port=8123"
-         - "traefik.backend=homeassistant-be"
+#         - "traefik.enable=true"
+     #    - "traefik.backend.loadbalancer.stickiness=true"
+#         - "traefik.backend.loadbalancer.swarm=true"
+         - "traefik.backend=homeassistant"
+         - "traefik.docker.network=homeassistant_traefik-webnet"
          - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
-
+         - "traefik.port=8123"
 networks:
   traefik-webnet:
     driver: overlay
+
+volumes:
+  homeassistantconfig:
