@@ -23,22 +23,46 @@ services:
         constraints: [node.role==manager]
 
   homeassistant:
-     image: homeassistant/raspberrypi3-homeassistant
-     networks:
-       - traefik-webnet
-     volumes:
-       - homeassistantconfig:/config
-       - /etc/localtime:/etc/localtime:ro
-     deploy:
-       mode: replicated
-       labels:
-#         - "traefik.enable=true"
+    image: homeassistant/raspberrypi3-homeassistant
+    networks:
+    - traefik-webnet
+    volumes:
+      - homeassistantconfig:/config
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      mode: replicated
+      labels:
      #    - "traefik.backend.loadbalancer.stickiness=true"
 #         - "traefik.backend.loadbalancer.swarm=true"
-         - "traefik.backend=homeassistant"
-         - "traefik.docker.network=homeassistant_traefik-webnet"
+#         - "traefik.backend=homeassistant"
          - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
+         - "traefik.docker.network=homeassistant_traefik-webnet"
          - "traefik.port=8123"
+         - "traefik.enable=true"
+
+  nginx:
+    image: nginx
+    networks:
+    - traefik-webnet
+    deploy:
+      mode: replicated
+      labels:
+         - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt;PathPrefixStrip:/nginx"
+         - "traefik.docker.network=nginx_traefik-webnet"
+         - "traefik.port=80"
+
+ caddy:
+    image: abiosoft/caddy
+    networks:
+    - proxy
+    deploy:
+#      replicas: 2
+      labels:
+      - traefik.frontend.rule=PathPrefixStrip:/caddy
+      - traefik.docker.network=proxy
+      - traefik.port=2015
+      - traefik.enable=true
+
 networks:
   traefik-webnet:
     driver: overlay
