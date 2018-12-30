@@ -1,6 +1,17 @@
 # homeassistant
-Raspberrypi 3b+ & Raspberry pi 2 & swarm & traefik
 
+- Hardware 
+
+* Raspberrypi 3b+ 
+* Raspberrypi 2
+
+- Stack Soft
+
+* Swarm
+* Hass
+* Traefik
+* Nginx
+* Caddy
 
 $ git clone repo
 
