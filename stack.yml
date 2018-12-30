@@ -15,6 +15,7 @@ services:
       - "8123:8123"
       - "80:80"
       - "8080:8080"
+      - "2015:2015"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/home/pi/labdev/traefik/traefik.toml
@@ -36,32 +37,33 @@ services:
 #         - "traefik.backend.loadbalancer.swarm=true"
 #         - "traefik.backend=homeassistant"
          - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
-         - "traefik.docker.network=homeassistant_traefik-webnet"
+         - "traefik.docker.network=homeassistant_traefik-webnet" 
          - "traefik.port=8123"
          - "traefik.enable=true"
 
   nginx:
     image: nginx
     networks:
-    - traefik-webnet
+    - traefik-webnet 
     deploy:
       mode: replicated
       labels:
          - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt;PathPrefixStrip:/nginx"
          - "traefik.docker.network=nginx_traefik-webnet"
          - "traefik.port=80"
+         - "traefik.enable=true"
 
- caddy:
-    image: abiosoft/caddy
+  caddy:
+    image: xaviaznar/rpi-alpine-caddy:v1.0 
     networks:
-    - proxy
+    - traefik-webnet
     deploy:
-#      replicas: 2
+#      replicas: 2  
       labels:
-      - traefik.frontend.rule=PathPrefixStrip:/caddy
-      - traefik.docker.network=proxy
-      - traefik.port=2015
-      - traefik.enable=true
+      - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt;PathPrefixStrip:/caddy"
+      - "traefik.docker.network=caddy_traefik-webnet"
+      - "traefik.port=2015"
+      - "traefik.enable=true"
 
 networks:
   traefik-webnet:
