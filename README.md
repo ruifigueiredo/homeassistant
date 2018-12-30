@@ -1,11 +1,11 @@
 # homeassistant
 
-- Hardware 
+**Hardware 
 
 * Raspberrypi 3b+ 
 * Raspberrypi 2
 
-- Stack Soft
+**Stack Soft
 
 * Swarm
 * Hass
