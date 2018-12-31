@@ -1,7 +1,5 @@
 # homeassistant
 
-[![dockeri.co](http://dockeri.co/image/ruifigueiredo/homeassistant)](https://registry.hub.docker.com/u/ruifigueiredo/homeassistant/)
-
 ## Hardware 
 
 * Raspberrypi 3b+ 
