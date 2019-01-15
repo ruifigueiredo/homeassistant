@@ -33,7 +33,7 @@ services:
     deploy:
       mode: replicated
       labels:
-     #    - "traefik.backend.loadbalancer.stickiness=true"
+#         - "traefik.backend.loadbalancer.stickiness=true"
 #         - "traefik.backend.loadbalancer.swarm=true"
 #         - "traefik.backend=homeassistant"
          - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
