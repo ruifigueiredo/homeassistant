@@ -36,7 +36,7 @@ services:
 #         - "traefik.backend.loadbalancer.stickiness=true"
 #         - "traefik.backend.loadbalancer.swarm=true"
 #         - "traefik.backend=homeassistant"
-         - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt"
+         - "traefik.frontend.rule=Host:${dominio}"
          - "traefik.docker.network=homeassistant_traefik-webnet" 
          - "traefik.port=8123"
          - "traefik.enable=true"
@@ -48,7 +48,7 @@ services:
     deploy:
       mode: replicated
       labels:
-         - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt;PathPrefixStrip:/nginx"
+         - "traefik.frontend.rule=Host:${dominio};PathPrefixStrip:/nginx"
          - "traefik.docker.network=nginx_traefik-webnet"
          - "traefik.port=80"
          - "traefik.enable=true"
@@ -60,7 +60,7 @@ services:
     deploy:
 #      replicas: 2  
       labels:
-      - "traefik.frontend.rule=Host:openlab.dynip.sapo.pt;PathPrefixStrip:/caddy"
+      - "traefik.frontend.rule=Host:${dominio};PathPrefixStrip:/caddy"
       - "traefik.docker.network=caddy_traefik-webnet"
       - "traefik.port=2015"
       - "traefik.enable=true"
